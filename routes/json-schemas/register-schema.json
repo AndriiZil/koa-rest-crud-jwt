@@ -1,0 +1,18 @@
+{
+  "title": "Register User Validation",
+  "description": "Register User Validation",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50
+    },
+    "password": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50
+    }
+  },
+  "required": ["email", "password"]
+}

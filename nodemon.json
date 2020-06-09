@@ -1,0 +1,8 @@
+{
+  "env": {
+    "PORT": 3000,
+    "JWT_SECRET": "secret",
+    "SALT_ROUNDS": 20000,
+    "MONGO_CREDENTIALS": "newUser:4dxj1lfEq47cxNow"
+  }
+}

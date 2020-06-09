@@ -1,0 +1,18 @@
+{
+  "title": "Create Update Post Validation",
+  "description": "Create Update Post Validation",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50
+    }
+  },
+  "required": ["title", "description"]
+}
