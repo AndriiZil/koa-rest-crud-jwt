@@ -8,12 +8,12 @@ const { validateEmail, validatePassword } = require('../utilities/validators');
 const { hash, compare } = require('../utilities/bcrypt');
 
 const schemaValidator = require('../routes/service/schema');
-const userService = require('../routes/service/user');
-const postService = require('../routes/service/post');
+const UserService = require('../routes/service/user');
+const PostService = require('../routes/service/post');
 
 const router = new Router();
 
-const authenticated = require('../middleware/jwt');
+const auth = require('../middleware/jwt');
 
 /**
  * @api {post} /register Register new User
@@ -79,7 +79,7 @@ router.post('/register', bodyParser(), async (ctx) => {
 
   const { email, password } = ctx.request.body;
 
-  const dbUser = await userService.getUserByEmail(email);
+  const dbUser = await UserService.getUserByEmail(email);
 
   if (dbUser) {
     ctx.throw(422, 'User already exists.')
@@ -89,8 +89,7 @@ router.post('/register', bodyParser(), async (ctx) => {
   validatePassword(password);
 
   const hashedPassowrd = await hash(password)
-
-  const user = await userService.createNewUser(email, hashedPassowrd);
+  const user = await UserService.createNewUser(email, hashedPassowrd);
 
   const transformedUser = transformUser(user)
 
@@ -156,7 +155,7 @@ router.post('/login', bodyParser(), async (ctx) => {
 
   const { email, password } = ctx.request.body;
 
-  const dbUser = await userService.getUserByEmail(email);
+  const dbUser = await UserService.getUserByEmail(email);
 
   if (!dbUser) {
     ctx.throw(422, 'User was not found.');
@@ -235,14 +234,14 @@ router.post('/login', bodyParser(), async (ctx) => {
  *         "message": "Post validation failed: description: Path `description` is required."
  *     }
  */
-router.post('/posts', bodyParser(), authenticated, async (ctx) => {
+router.post('/posts', bodyParser(), auth(), async (ctx) => {
   await schemaValidator.customSchemaValidation('create-update-post', ctx);
 
   const { title, description } = ctx.request.body;
 
   const creatorId = getCreatorId(ctx);
 
-  const post = await postService.create(title, description, creatorId);
+  const post = await PostService.create(title, description, creatorId);
 
   const createdPost = transformPost(post);
 
@@ -336,11 +335,11 @@ router.post('/posts', bodyParser(), authenticated, async (ctx) => {
  *        "message": "User was not defined."
  *     }
  */
-router.get('/posts', authenticated, async (ctx) => {
+router.get('/posts', auth(), async (ctx) => {
   try {
     const creatorId = getCreatorId(ctx);
 
-    const posts = await postService.getAll();
+    const posts = await PostService.getAll();
 
     const postsById = transformPosts(posts, creatorId);
 
@@ -403,10 +402,10 @@ router.get('/posts', authenticated, async (ctx) => {
  *        "message": "Not defined."
  *     }
  */
-router.get('/posts/:id', authenticated, async (ctx) => {
+router.get('/posts/:id', auth(), async (ctx) => {
   const { id } = ctx.params;
 
-  const post = await postService.getById(id);
+  const post = await PostService.getById(id);
   const singlePost = transformPost(post);
 
   ctx.body = { ...singlePost };
@@ -449,7 +448,7 @@ router.get('/posts/:id', authenticated, async (ctx) => {
  *        "message": "You are not post's owner."
  *     }
  */
-router.patch('/posts/:id', bodyParser(), authenticated, async (ctx) => {
+router.patch('/posts/:id', bodyParser(), auth(), async (ctx) => {
   const { id } = ctx.params;
 
   await schemaValidator.customSchemaValidation('create-update-post', ctx);
@@ -458,12 +457,12 @@ router.patch('/posts/:id', bodyParser(), authenticated, async (ctx) => {
 
   const { title, description } = ctx.request.body;
 
-  const post = await postService.getAll();
+  const post = await PostService.getAll();
 
   if (creatorId !== post[0].postedBy._id.toString()) {
     ctx.throw(422, 'You are not post\'s owner.');
   } else {
-    await postService.update(title, description, id);
+    await PostService.update(title, description, id);
   }
 
   ctx.body = { message: "success" };
@@ -504,11 +503,11 @@ router.patch('/posts/:id', bodyParser(), authenticated, async (ctx) => {
  *        "message": "You are not post's owner."
  *     }
  */
-router.delete('/posts/:id', authenticated, async (ctx) => {
+router.delete('/posts/:id', auth(), async (ctx) => {
   const { id } = ctx.params;
   const creatorId = getCreatorId(ctx);
 
-  const post = await postService.getById(id);
+  const post = await PostService.getById(id);
 
   if (!post) {
     ctx.throw(404, `Post with "${id}" id was not found.`);
@@ -517,7 +516,7 @@ router.delete('/posts/:id', authenticated, async (ctx) => {
   if (creatorId !== post.postedBy.toString()) {
     ctx.throw(422, 'You are not post\'s owner.');
   } else {
-    await postService.delete(id);
+    await PostService.delete(id);
   }
 
   ctx.body = { message: "success" };

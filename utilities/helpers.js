@@ -43,7 +43,6 @@ const transformPost = post => {
 }
 
 const transformUser = user => {
-  console.log(user);
   return {
     userId: user._id,
     email: user.email,

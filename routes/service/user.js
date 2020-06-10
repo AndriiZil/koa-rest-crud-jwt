@@ -1,16 +1,23 @@
 const User = require('../../models/User');
-const schemaValidator = require('../service/schema');
-
-const { validatePassword, validateEmail } = require('../../utilities/validators');
-const { hash, compare } = require('../../utilities/bcrypt');
 
 class UserService {
 
-  async getUserByEmail(email) {
+  /**
+   * Get user by email
+   * @param {String} email
+   * @returns {Promise<void>}
+   */
+  static async getUserByEmail(email) {
     return User.findOne({ email });
   }
 
-  async createNewUser(email, hashedPassowrd) {
+  /**
+   * Create new user
+   * @param {String} email
+   * @param {String} hashedPassowrd
+   * @returns {Promise<void|Promise|*>}
+   */
+  static async createNewUser(email, hashedPassowrd) {
     const user = new User({
       email,
       password: hashedPassowrd
@@ -21,4 +28,4 @@ class UserService {
 
 }
 
-module.exports = new UserService();
+module.exports = UserService;

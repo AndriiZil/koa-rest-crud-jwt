@@ -11,6 +11,5 @@ module.exports = async (ctx, next) => {
       success: false,
       message: err.message
     };
-    ctx.app.emit('error', err, ctx);
   }
 };

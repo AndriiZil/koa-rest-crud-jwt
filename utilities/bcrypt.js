@@ -1,21 +1,8 @@
 const bcrypt = require('bcrypt-nodejs');
 
-const saltRounds = process.env.SALT_ROUNDS;
-
-const genSalt = rounds => new Promise((resolve, reject) => {
-  bcrypt.genSalt(rounds, (err, result) => {
-    if (err) {
-      reject(err);
-    } else {
-      resolve(result);
-    }
-  });
-});
-
 const hash = data => new Promise(async (resolve, reject) => {
-  const salt = await genSalt(saltRounds);
-
-  bcrypt.hash(data, salt, null, (err, result) => {
+  // We cannot pass process.env.SALT_ROUNDS instead salt // only null or get salt with func
+  bcrypt.hash(data, null, null, (err, result) => {
     if (err) {
       reject(err);
     } else {

@@ -1,10 +1,6 @@
 const Post = require('../../models/Post');
-const User = require('../../models/User');
-const schemaValidator = require('../service/schema');
 
-const { getCreatorId } = require('../../utilities/helpers');
-
-class postService {
+class PostService {
 
   /**
    * Create new post
@@ -13,12 +9,12 @@ class postService {
    * @param {Number} creatorId
    * @returns {Promise<void|Promise|*>}
    */
-  async create(title, description, creatorId) {
+  static async create(title, description, creatorId) {
     const post = new Post({
       title,
       description,
       postedBy: creatorId,
-      date: new Date().toISOString()
+      date: new Date()
     });
 
     return post.save();
@@ -29,7 +25,7 @@ class postService {
    * @param {String} id
    * @returns {Promise<void>}
    */
-  async getById(id) {
+  static async getById(id) {
     return Post.findOne({ _id: id });
   }
 
@@ -37,7 +33,7 @@ class postService {
    * Get all posts
    * @returns {Promise<void|[*]>}
    */
-  async getAll() {
+  static async getAll() {
     return Post.find().populate('postedBy');
   }
 
@@ -48,7 +44,7 @@ class postService {
    * @param {Number} id
    * @returns {Promise<void|Query>}
    */
-  async update(title, description, id) {
+  static async update(title, description, id) {
     return Post.findOneAndUpdate({ _id: id }, {
       title,
       description
@@ -60,10 +56,10 @@ class postService {
    * @param {Number} id
    * @returns {Promise<Query>}
    */
-  async delete(id) {
+  static async delete(id) {
     return Post.findOneAndRemove({_id: id});
   }
 
 }
 
-module.exports = new postService();
+module.exports = PostService;

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 class DatabaseConnection {
 
-  async getConnection() {
+  static async getConnection() {
     const options = {
       useFindAndModify: false,
       useNewUrlParser: true,
@@ -21,4 +21,4 @@ class DatabaseConnection {
 
 }
 
-module.exports = new DatabaseConnection();
+module.exports = DatabaseConnection;
