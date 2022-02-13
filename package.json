@@ -10,7 +10,7 @@
   "keywords": [],
   "dependencies": {
     "@koa/cors": "^3.0.0",
-    "ajv": "^6.12.2",
+    "ajv": "^6.12.3",
     "bcrypt-nodejs": "0.0.3",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.11.0",
